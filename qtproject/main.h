@@ -1,14 +1,20 @@
+#pragma once
+/*#define pthread_rwlock_destroy old_pthread_rwlock_destroy
+#define pthread_rwlock_rdlock old_pthread_rwlock_rdlock
+#define pthread_rwlock_wrlock old_pthread_rwlock_wrlock
+#define pthread_rwlock_unlock old_pthread_rwlock_unlock
+#define pthread_rwlock_init old_pthread_rwlock_init
+#define __USE_UNIX98
 #include <pthread.h>
+#undef pthread_rwlock_destroy
+#undef pthread_rwlock_rdlock
+#undef pthread_rwlock_wrlock
+#undef pthread_rwlock_unlock
+#undef pthread_rwlock_init*/
 
-typedef union {
-    pthread_rwlock_t oldLock; // Only to keep size
-    struct {
-        pthread_rwlock_t *originalLock;
-        struct rw *numaLock;
-        // My fancy data, which must be smaller than (56 - sizeof(pthread_rwlock_t*)) bytes,
-        // or a pointer to actual fancy data otherwise
-        int node;
-    };
+typedef struct {
+	struct rw *numaLock;
+	// My fancy data, which must be smaller than (56 - sizeof(pthread_rwlock_t*)) bytes,
+	// or a pointer to actual fancy data otherwise
+	int node;
 } my_pthread_rwlock_t;
-
-struct rw *findLock(pthread_rwlock_t *rwlock);
