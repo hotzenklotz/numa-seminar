@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = rwlock
-CONFIG += console
+#CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -9,8 +9,10 @@ SOURCES += main.c \
 
 #CCFLAG+=-Wall -fPIC -Iinclude -shared
 QMAKE_CFLAGS += -std=c99
+LIBS += -lpthread
 
 HEADERS += \
     rw_bo_msc.h \
     main.h
+
 

@@ -233,10 +233,12 @@ void c_bo_mcs_acquire(struct c_bo_mcs *l, int *node) {
 void c_bo_mcs_release(struct c_bo_mcs *l, int node) {
   struct mcs *tmp;
   if(mcs_isalone(l->llocks[node]) || !mcs_maypass_local(l->llocks[node])) {
+	  printf("if");
     bo_release(l->glock);
     if(tmp = mcs_release(&l->llocks[node]))
       tmp->state = GLOBAL_RELEASE;
   } else
+	  printf("else");
     if(tmp = mcs_release(&l->llocks[node]))
       tmp->state = LOCAL_RELEASE;
 }
@@ -404,8 +406,10 @@ void rw_acquire(struct rw *l, mode m, int *node) {
 
 void rw_release(struct rw *l, mode m, int node) {
   if(m == R)
+	  printf("release R");
     __sync_fetch_and_add(&l->indicators[node].depart, 1);
   else {
+		printf("relese")
     l->wactive = false;
     c_bo_mcs_release(l->writers, node);
   }
