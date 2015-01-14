@@ -11,9 +11,12 @@
 #undef pthread_rwlock_unlock
 #undef pthread_rwlock_init
 
+#include <rw_bo_msc.h>
+
 typedef struct {
 	struct rw *numaLock;
 	// My fancy data, which must be smaller than (56 - sizeof(pthread_rwlock_t*)) bytes,
 	// or a pointer to actual fancy data otherwise
 	int node;
+	int lockType;
 } my_pthread_rwlock_t;

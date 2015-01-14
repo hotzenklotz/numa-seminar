@@ -7,7 +7,6 @@ CONFIG -= qt
 SOURCES += main.c \
     rw_bo_mcs.c
 
-#CCFLAG+=-Wall -fPIC -Iinclude -shared
 QMAKE_CFLAGS += -std=c99
 LIBS += -lpthread
 

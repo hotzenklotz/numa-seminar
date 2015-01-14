@@ -1,6 +1,5 @@
 #include <stdio.h>
-#include <untitled.h>
-#include <rw_bo_msc.h>
+#include <main.h>
 
 /* Acquire write lock for RWLOCK.  */
 int pthread_rwlock_wrlock (my_pthread_rwlock_t *rwlock)
@@ -34,13 +33,11 @@ int pthread_rwlock_destroy(my_pthread_rwlock_t *rwlock)
 
 
 
-typedef int pthread_rwlockattr_t; // Bei Gelegenheit an das Original aus pthread.h anpassen
-int pthread_rwlock_init(my_pthread_rwlock_t *rwlock, const pthread_rwlockattr_t *attr)
+typedef int pthread_rwlockattr_t; // use original from pthread.h
+int pthread_rwlock_init(my_pthread_rwlock_t *rwlock, pthread_rwlockattr_t *attr)
 {
+	rwlock->numaLock = init_rw(READER);
+	rwlock->node = 0;
 
-   rwlock->numaLock = init_rw(READER);
-   rwlock->node = 0;
-
-  return 0;
+	return 0;
 }
-
