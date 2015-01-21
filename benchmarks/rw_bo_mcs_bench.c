@@ -513,6 +513,7 @@ struct opts {
   int *array;
   struct rw *lock;
   unsigned msecs;
+  int arraySize;
 };
 
 void *rw_bnchmrk(void *arg) {
@@ -527,7 +528,8 @@ void *rw_bnchmrk(void *arg) {
   int ncslen = o.ncslen;
   unsigned msecs = o.msecs;
 
-  int node, private_array[64];
+  int arraySize = o.arraySize;
+  int node, private_array[arraySize];
   long i = 0; /* result */
 
   struct timeval tsmain, tfmain, tsncs, tfncs, tswcs, tfwcs, tsrcs, tfrcs; 
@@ -543,8 +545,8 @@ void *rw_bnchmrk(void *arg) {
     gettimeofday(&tfncs, NULL);
     while (mtimediff(tfncs, tsncs) <= ncslen) {
       int r = rand_r(&seed) % 500;
-      private_array[rand_r(&seed) % 64] += r;
-      private_array[rand_r(&seed) % 64] -= r;
+      private_array[rand_r(&seed) % arraySize] += r;
+      private_array[rand_r(&seed) % arraySize] -= r;
       gettimeofday(&tfncs, NULL);      
     }
 
@@ -559,8 +561,8 @@ void *rw_bnchmrk(void *arg) {
       gettimeofday(&tfwcs, NULL);
       while (mtimediff(tfwcs, tswcs) <= wcslen) {
 	int r = rand_r(&seed) % 500;
-	shared_array[rand_r(&seed) % 64] += r;
-	shared_array[rand_r(&seed) % 64] -= r;
+	shared_array[rand_r(&seed) % arraySize] += r;
+	shared_array[rand_r(&seed) % arraySize] -= r;
 	gettimeofday(&tfwcs, NULL);
       }
 
@@ -570,8 +572,8 @@ void *rw_bnchmrk(void *arg) {
       rw_acquire(l, R, &node); /*entering the critical section*/
       gettimeofday(&tfrcs, NULL);
       while (mtimediff(tfrcs,tsrcs) <= rcslen) {
-	volatile int i1 = shared_array[rand_r(&seed) % 64];
-	volatile int i2 = shared_array[rand_r(&seed) % 64];
+	volatile int i1 = shared_array[rand_r(&seed) % arraySize];
+	volatile int i2 = shared_array[rand_r(&seed) % arraySize];
 	gettimeofday(&tfrcs, NULL);
       }
 
@@ -599,7 +601,8 @@ int main(int argc, char *argv[])
   o->ncslen = atoi(argv[3]);
   o->prob = atoi(argv[4]);
 
-  o->array = calloc(64, sizeof(int));
+  o->arraySize = atoi(argv[8]);
+  o->array = calloc(o->arraySize, sizeof(int));
   o->msecs = atoi(argv[7]);
 
   switch (atoi(argv[6])) {

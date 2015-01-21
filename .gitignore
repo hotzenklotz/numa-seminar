@@ -3,5 +3,5 @@
 benchmarks/bo_bench
 benchmarks/mcs_bench
 benchmarks/pthread_bench
-benchmarks/rw_bo_bench
+benchmarks/rw_bo_mcs_bench
 
